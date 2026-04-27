@@ -27,27 +27,20 @@ final class CheckTranslations extends Command
      */
     protected $description = 'Checks if all translations are there for all languages.';
 
-    /**
-     * @var array
-     */
     public array $realLines = [];
 
-    /**
-     * @var array
-     */
     public array $emptyTranslations = [];
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
         $directory = $this->option('directory') ?: app()->langPath();
+        $directory = rtrim(str_replace('\\', '/', $directory), '/');
 
         if (! File::isDirectory($directory)) {
-            $this->error('The passed directory (' . $directory . ') does not exist.');
+            $this->error('The passed directory ('.$directory.') does not exist.');
 
             return $this::FAILURE;
         }
@@ -59,14 +52,15 @@ final class CheckTranslations extends Command
 
         $rdi = new RecursiveDirectoryIterator($directory, FilesystemIterator::KEY_AS_PATHNAME);
         foreach (new RecursiveIteratorIterator($rdi, RecursiveIteratorIterator::SELF_FIRST) as $langFile => $info) {
-            if (!File::isDirectory($langFile) && Str::endsWith($langFile, ['.json', '.php'])) {
+            if (! File::isDirectory($langFile) && Str::endsWith($langFile, ['.json', '.php'])) {
                 $fileName = basename($langFile);
-                $languageDir = Str::replace($fileName, '', $langFile);
+                $filePath = str_replace('\\', '/', $langFile);
+                $languageDir = Str::replaceLast('/'.$fileName, '', $filePath);
 
                 $languagesWithMissingFile = $this->checkIfFileExistsForOtherLanguages($languages, $fileName, $directory);
 
                 foreach ($languagesWithMissingFile as $languageWithMissingFile) {
-                    $missingFiles[] = 'The language ' . $languageWithMissingFile . ' (' . $directory . '/' . $languageWithMissingFile . ') is missing the file ( ' . $fileName . ' )';
+                    $missingFiles[] = 'The language '.$languageWithMissingFile.' ('.$directory.'/'.$languageWithMissingFile.') is missing the file ( '.$fileName.' )';
                 }
 
                 $this->handleFile($languageDir, $langFile);
@@ -79,19 +73,19 @@ final class CheckTranslations extends Command
 
             foreach ($languages as $language) {
 
-                $fileNameWithoutKey = substr($key, 0, strpos($key, "**"));
+                $fileNameWithoutKey = substr($key, 0, strpos($key, '**'));
                 $fileKey = basename($fileNameWithoutKey);
-                $keyWithoutFile = substr($key, strpos($key, "**") + 2, strlen($key));
+                $keyWithoutFile = substr($key, strpos($key, '**') + 2, strlen($key));
 
                 $exists = $this->translationExistsAsJsonOrAsSubDir($directory, $language, $fileKey, $keyWithoutFile);
 
-                if (!$exists) {
+                if (! $exists) {
                     $fileName = Str::replace(['.php', '.json'], '', $fileKey);
 
                     if (in_array($fileName, $languages)) {
-                        $missing[] = $language . '.' . $keyWithoutFile;
+                        $missing[] = $language.'.'.$keyWithoutFile;
                     } else {
-                        $missing[] = $language . '.' . $fileName . '.' . $keyWithoutFile;
+                        $missing[] = $language.'.'.$fileName.'.'.$keyWithoutFile;
                     }
 
                 }
@@ -104,7 +98,7 @@ final class CheckTranslations extends Command
         }
 
         foreach ($missing as $missingTranslation) {
-            $this->error('Missing the translation with key: ' . $missingTranslation);
+            $this->error('Missing the translation with key: '.$missingTranslation);
         }
 
         foreach ($this->emptyTranslations as $emptyTranslation) {
@@ -120,10 +114,13 @@ final class CheckTranslations extends Command
 
     public function translationExistsAsJsonOrAsSubDir(string $directory, string $language, string $fileKey, string $keyWithoutFile): bool
     {
-        $existsAsSubDirValue = array_key_exists($directory . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . $fileKey . '**' . $keyWithoutFile, $this->realLines);
+        $normalizedDir = rtrim(str_replace('\\', '/', $directory), '/');
 
-        $fileKeyWithoutLangComponent = explode('.', $fileKey, 2)[1];
-        $existsAsJSONValue = array_key_exists($directory . DIRECTORY_SEPARATOR . $language . '.' . $fileKeyWithoutLangComponent . '**' . $keyWithoutFile, $this->realLines);
+        $existsAsSubDirValue = array_key_exists($normalizedDir.'/'.$language.'/'.$fileKey.'**'.$keyWithoutFile, $this->realLines);
+
+        $fileKeyWithoutLangComponent = explode('.', $fileKey, 2)[1] ?? $fileKey;
+        $existsAsJSONValue = array_key_exists($normalizedDir.'/'.$language.'.'.$fileKeyWithoutLangComponent.'**'.$keyWithoutFile, $this->realLines);
+
         return $existsAsSubDirValue || $existsAsJSONValue;
     }
 
@@ -137,8 +134,8 @@ final class CheckTranslations extends Command
         $languagesWhereFileIsMissing = [];
         foreach ($languages as $language) {
             if (
-                ! File::exists($baseDirectory . '/' . $language .  '/' . $fileName)
-                && ! File::exists($baseDirectory . '/' . $fileName)
+                ! File::exists($baseDirectory.'/'.$language.'/'.$fileName)
+                && ! File::exists($baseDirectory.'/'.$fileName)
             ) {
                 $languagesWhereFileIsMissing[] = $language;
             }
@@ -150,23 +147,25 @@ final class CheckTranslations extends Command
     public function handleFile($languageDir, $langFile): void
     {
         $fileName = basename($langFile);
-        $language = Str::afterLast(rtrim($languageDir, '/'), '/');
+        $normalizedDir = rtrim(str_replace('\\', '/', $languageDir), '/');
+        $language = basename($normalizedDir);
 
-        if(Str::endsWith($fileName, '.json')) {
+        if (Str::endsWith($fileName, '.json')) {
             $lines = json_decode(File::get($langFile), true);
-        }else {
-            $lines = include($langFile);
+        } else {
+            $lines = include $langFile;
         }
 
-        if (!is_array($lines)) {
-            $this->warn("Skipping file (" . $langFile . ") because it is empty.");
+        if (! is_array($lines)) {
+            $this->warn('Skipping file ('.$langFile.') because it is empty.');
+
             return;
         }
 
         $this->checkForEmptyTranslations($lines, $language, $fileName);
 
         foreach ($this->flatLines($lines) as $index => $line) {
-            $this->realLines[$languageDir.$fileName.'**'.$index] = $line;
+            $this->realLines[$normalizedDir.'/'.$fileName.'**'.$index] = $line;
         }
     }
 
@@ -213,9 +212,6 @@ final class CheckTranslations extends Command
 
     /**
      * Get all languages from the given directory.
-     *
-     * @param string $directory
-     * @return array
      */
     private function getLanguages(string $directory): array
     {

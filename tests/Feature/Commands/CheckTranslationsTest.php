@@ -39,7 +39,7 @@ it('fails if value is empty', function (): void {
     ]);
 
     $command->assertExitCode(1);
-    $command->expectsOutput('Empty translation found in: one_missing_value\es\.test -> test_key');
+    $command->expectsOutput('Empty translation found in: es.test -> test_key');
 });
 
 it('is successful if none keys are missing', function (): void {
