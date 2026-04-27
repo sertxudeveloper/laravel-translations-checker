@@ -113,3 +113,63 @@ it('handles slashes in json keys', function () {
     $command->assertExitCode(0);
     $command->expectsOutput('✔ All translations are okay!');
 });
+
+it('returns error if directory is missing', function (): void {
+    $command = $this->artisan('translations:check', [
+        '--directory' => 'missing_directory',
+    ]);
+
+    $command->assertExitCode(1);
+    $command->expectsOutput('The directory "missing_directory" does not exist.');
+});
+
+it('skips non-array PHP translation files', function (): void {
+    $command = $this->artisan('translations:check', [
+        '--directory' => BASIC_LANG_DIR . 'non_array_php',
+    ]);
+
+    $command->assertExitCode(0);
+    $command->expectsOutput('✔ All translations are okay!');
+});
+
+it('skips non-array JSON translation files', function (): void {
+    $command = $this->artisan('translations:check', [
+        '--directory' => JSON_LANG_DIR . 'non_array_json',
+    ]);
+
+    $command->assertExitCode(0);
+    $command->expectsOutput('✔ All translations are okay!');
+});
+
+it('flattens nested translation arrays correctly', function (): void {
+    $command = $this->artisan('translations:check', [
+        '--directory' => BASIC_LANG_DIR . 'nested_translations',
+    ]);
+
+    $command->assertExitCode(0);
+    $command->expectsOutput('✔ All translations are okay!');
+});
+
+it('recursively finds empty translations in nested arrays', function (): void {
+    $command = $this->artisan('translations:check', [
+        '--directory' => BASIC_LANG_DIR . 'nested_empty',
+    ]);
+
+    $command->assertExitCode(1);
+    $command->expectsOutput('Empty translation found in: es.test -> parent.empty_child');
+});
+
+it('handles deeply nested empty translations', function (): void{
+    $command = $this->artisan('translations:check', [
+        '--directory' => BASIC_LANG_DIR . 'nested_empty',
+    ]);
+
+    $command->assertExitCode(1);
+    $command->expectsOutput('Missing the translation with key: en.test.parent.nested.deep');
+    $command->expectsOutput('Missing the translation with key: en.test.parent.nested.valid');
+    $command->expectsOutput('Empty translation found in: en.test -> parent.empty_child');
+    $command->expectsOutput('Empty translation found in: es.test -> parent.child');
+    $command->expectsOutput('Empty translation found in: es.test -> parent.empty_child');
+    $command->expectsOutput('Empty translation found in: es.test -> parent.nested.deep');
+    $command->expectsOutput('Empty translation found in: es.test -> simple');
+});

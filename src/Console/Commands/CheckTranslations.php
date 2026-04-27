@@ -31,7 +31,7 @@ final class CheckTranslations extends Command
         $directory = (string) ($this->option('directory') ?: app()->langPath());
 
         if (! is_dir($directory)) {
-            $this->error("The directory {$directory} does not exist.");
+            $this->error("The directory \"{$directory}\" does not exist.");
 
             return self::FAILURE;
         }
