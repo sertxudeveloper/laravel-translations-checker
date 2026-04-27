@@ -34,7 +34,7 @@ php artisan translations:check
 By default, it checks the `lang` directory in your application. You can specify a different directory:
 
 ```bash
-php artisan translations:check resources/lang
+php artisan translations:check --directory=resources/lang
 ```
 
 The command returns exit code 1 if any issues are found, making it suitable for CI/CD pipelines.
@@ -55,9 +55,9 @@ Empty translations:
 You can also use the underlying service in your own code:
 
 ```php
-use SertxuDeveloper\TranslationsChecker\Services\TranslationChecker;
+use SertxuDeveloper\TranslationsChecker\Services\TranslationCheckerService;
 
-$checker = app(TranslationChecker::class);
+$checker = app(TranslationCheckerService::class);
 $result = $checker->check(resource_path('lang'));
 
 $result['missingFiles'];        // Files missing in some languages

@@ -28,7 +28,7 @@ final class CheckTranslations extends Command
      */
     public function handle(TranslationCheckerService $service): int
     {
-        $directory = $this->option('directory') ?: app()->langPath();
+        $directory = (string) ($this->option('directory') ?: app()->langPath());
 
         if (! is_dir($directory)) {
             $this->error("The directory {$directory} does not exist.");
