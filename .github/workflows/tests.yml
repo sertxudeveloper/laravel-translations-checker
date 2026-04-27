@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php-version }} / Laravel ${{ matrix.laravel-version }} / ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }} / ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
 
@@ -31,7 +31,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
-          extensions: dom, curl, xml, libxml, mbstring, zip, intl, gd, mysql
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, bcmath, soap, intl, gd, exif, iconv, fileinfo
 
       - name: Cache composer
         uses: actions/cache@v5
