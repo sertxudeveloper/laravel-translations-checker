@@ -41,9 +41,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.php }}-
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-
       - name: Require Laravel version
         run: |
           composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-interaction --no-update
