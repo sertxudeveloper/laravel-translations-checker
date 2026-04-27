@@ -19,8 +19,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php-version: ['8.2', '8.3', '8.4', '8.5']
-        laravel-version: ['11', '12', '13']
+        php: ['8.2', '8.3', '8.4', '8.5']
+        laravel: ['11', '12', '13']
 
     steps:
       - name: Checkout code
@@ -29,7 +29,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: ${{ matrix.php }}
           coverage: none
           extensions: dom, curl, xml, libxml, mbstring, zip, intl, gd, mysql
 
@@ -37,16 +37,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache
-          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('composer.json') }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
       - name: Require Laravel version
         run: |
-          composer require "illuminate/contracts:^${{ matrix.laravel-version }}" "illuminate/support:^${{ matrix.laravel-version }}" "orchestra/testbench:^${{ matrix.laravel-version }}" --no-update --no-interaction
+          composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-interaction --no-update
         shell: bash
 
       - name: Update dependencies
