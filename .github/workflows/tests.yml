@@ -54,5 +54,10 @@ jobs:
         shell: bash
 
       - name: Execute tests
-        run: ./vendor/bin/pest
-        shell: bash
+        run: vendor/bin/pest --coverage-clover=coverage.xml
+
+      - name: Send code coverage report to Codecov.io
+        uses: codecov/codecov-action@v5.5.3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: sertxudeveloper/laravel-translations-checker
