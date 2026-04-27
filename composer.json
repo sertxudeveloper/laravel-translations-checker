@@ -1,6 +1,6 @@
 {
     "name": "sertxudeveloper/laravel-translations-checker",
-    "description": "Check Laravel translation files for missing translations",
+    "description": "Check Laravel translation files for missing keys, files, and empty values. Integrates with CI/CD pipelines.",
     "keywords": [
         "laravel",
         "translations",
