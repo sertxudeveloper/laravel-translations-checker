@@ -26,7 +26,6 @@
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
         "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.1"
     },
@@ -50,7 +49,6 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "pestphp/pest-plugin-laravel": true,
             "phpstan/extension-installer": true
         }
     },
