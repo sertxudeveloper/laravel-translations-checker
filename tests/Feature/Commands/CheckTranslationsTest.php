@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-const BASIC_LANG_DIR = "tests/resources/lang/basic/";
-const MULTIPLE_LANG_DIR = "tests/resources/lang/multi_langs/";
-const JSON_LANG_DIR = "tests/resources/lang/json/";
+const BASIC_LANG_DIR = 'tests/resources/lang/basic/';
+const MULTIPLE_LANG_DIR = 'tests/resources/lang/multi_langs/';
+const JSON_LANG_DIR = 'tests/resources/lang/json/';
 
 it('returns errors if one key is missing', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'one_missing_key',
+        '--directory' => BASIC_LANG_DIR.'one_missing_key',
     ]);
 
     $command->assertExitCode(1);
@@ -17,7 +17,7 @@ it('returns errors if one key is missing', function (): void {
 
 it('returns errors if multiple keys are missing', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'two_missing_keys',
+        '--directory' => BASIC_LANG_DIR.'two_missing_keys',
     ]);
 
     $command->expectsOutput('Missing the translation with key: es.test.test_key');
@@ -26,7 +26,7 @@ it('returns errors if multiple keys are missing', function (): void {
 
 it('fails if key is missing', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'one_missing_file',
+        '--directory' => BASIC_LANG_DIR.'one_missing_file',
     ]);
 
     $command->assertExitCode(1);
@@ -35,7 +35,7 @@ it('fails if key is missing', function (): void {
 
 it('fails if value is empty', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'one_missing_value',
+        '--directory' => BASIC_LANG_DIR.'one_missing_value',
     ]);
 
     $command->assertExitCode(1);
@@ -44,7 +44,7 @@ it('fails if value is empty', function (): void {
 
 it('is successful if none keys are missing', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'zero_missing_keys',
+        '--directory' => BASIC_LANG_DIR.'zero_missing_keys',
     ]);
 
     $command->assertExitCode(0);
@@ -53,7 +53,7 @@ it('is successful if none keys are missing', function (): void {
 
 it('handles a single language', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => MULTIPLE_LANG_DIR . 'one_language',
+        '--directory' => MULTIPLE_LANG_DIR.'one_language',
     ]);
 
     $command->assertExitCode(0);
@@ -62,7 +62,7 @@ it('handles a single language', function (): void {
 
 it('handles two languages', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => MULTIPLE_LANG_DIR . 'two_languages',
+        '--directory' => MULTIPLE_LANG_DIR.'two_languages',
     ]);
 
     $command->assertExitCode(0);
@@ -71,7 +71,7 @@ it('handles two languages', function (): void {
 
 it('handles ten languages', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => MULTIPLE_LANG_DIR . 'ten_languages',
+        '--directory' => MULTIPLE_LANG_DIR.'ten_languages',
     ]);
 
     $command->assertExitCode(0);
@@ -80,7 +80,7 @@ it('handles ten languages', function (): void {
 
 it('handles one top-level language file', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => JSON_LANG_DIR . 'toplevel_json_files/one',
+        '--directory' => JSON_LANG_DIR.'toplevel_json_files/one',
     ]);
 
     $command->assertExitCode(0);
@@ -89,7 +89,7 @@ it('handles one top-level language file', function (): void {
 
 it('handles two top-level language file', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => JSON_LANG_DIR . 'toplevel_json_files/two',
+        '--directory' => JSON_LANG_DIR.'toplevel_json_files/two',
     ]);
 
     $command->assertExitCode(0);
@@ -98,7 +98,7 @@ it('handles two top-level language file', function (): void {
 
 it('handles missing key in top-level language file', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => JSON_LANG_DIR . 'toplevel_json_files/missing_key_in_one_lang',
+        '--directory' => JSON_LANG_DIR.'toplevel_json_files/missing_key_in_one_lang',
     ]);
 
     $command->assertExitCode(1);
@@ -107,7 +107,7 @@ it('handles missing key in top-level language file', function (): void {
 
 it('handles slashes in json keys', function () {
     $command = $this->artisan('translations:check', [
-        '--directory' => JSON_LANG_DIR . 'toplevel_json_files/slashes_in_title',
+        '--directory' => JSON_LANG_DIR.'toplevel_json_files/slashes_in_title',
     ]);
 
     $command->assertExitCode(0);
@@ -125,7 +125,7 @@ it('returns error if directory is missing', function (): void {
 
 it('skips non-array PHP translation files', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'non_array_php',
+        '--directory' => BASIC_LANG_DIR.'non_array_php',
     ]);
 
     $command->assertExitCode(0);
@@ -134,7 +134,7 @@ it('skips non-array PHP translation files', function (): void {
 
 it('skips non-array JSON translation files', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => JSON_LANG_DIR . 'non_array_json',
+        '--directory' => JSON_LANG_DIR.'non_array_json',
     ]);
 
     $command->assertExitCode(0);
@@ -143,7 +143,7 @@ it('skips non-array JSON translation files', function (): void {
 
 it('flattens nested translation arrays correctly', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'nested_translations',
+        '--directory' => BASIC_LANG_DIR.'nested_translations',
     ]);
 
     $command->assertExitCode(0);
@@ -152,16 +152,16 @@ it('flattens nested translation arrays correctly', function (): void {
 
 it('recursively finds empty translations in nested arrays', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'nested_empty',
+        '--directory' => BASIC_LANG_DIR.'nested_empty',
     ]);
 
     $command->assertExitCode(1);
     $command->expectsOutput('Empty translation found in: es.test -> parent.empty_child');
 });
 
-it('handles deeply nested empty translations', function (): void{
+it('handles deeply nested empty translations', function (): void {
     $command = $this->artisan('translations:check', [
-        '--directory' => BASIC_LANG_DIR . 'nested_empty',
+        '--directory' => BASIC_LANG_DIR.'nested_empty',
     ]);
 
     $command->assertExitCode(1);

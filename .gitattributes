@@ -1,0 +1,40 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Export ignore - files not needed in distributed archives
+.gitattributes export-ignore
+.gitignore export-ignore
+.github/ export-ignore
+.idea/ export-ignore
+tests/ export-ignore
+art/ export-ignore
+vendor/ export-ignore
+composer.lock export-ignore
+phpunit.xml export-ignore
+
+# PHP files
+*.php text diff=php
+
+# JSON files (translations)
+*.json text diff=json
+
+# Markdown
+*.md text diff=markdown
+
+# YAML files
+*.yml text diff=yaml
+*.yaml text diff=yaml
+
+# Images
+*.png binary
+*.jpg binary
+*.gif binary
+*.svg binary
+*.webp binary
+
+# Composer files
+composer.json text
+composer.lock text
+
+# Shell scripts
+*.sh text eol=lf
