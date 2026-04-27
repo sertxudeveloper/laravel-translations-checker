@@ -1,0 +1,58 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php-version }} / Laravel ${{ matrix.laravel-version }} / ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        php-version: ['8.2', '8.3', '8.4', '8.5']
+        laravel-version: ['11', '12', '13']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          extensions: dom, curl, xml, libxml, mbstring, zip, intl, gd, mysql
+
+      - name: Cache composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Require Laravel version
+        run: |
+          composer require "illuminate/contracts:^${{ matrix.laravel-version }}" "illuminate/support:^${{ matrix.laravel-version }}" "orchestra/testbench:^${{ matrix.laravel-version }}" --no-update --no-interaction
+        shell: bash
+
+      - name: Update dependencies
+        run: composer update --no-interaction --prefer-dist
+        shell: bash
+
+      - name: Execute tests
+        run: ./vendor/bin/pest
+        shell: bash
