@@ -84,6 +84,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [Sergio Peris](https://github.com/sertxudev)
+- Special mention to [LarsWiegers](https://github.com/LarsWiegers)
 - [All Contributors](../../contributors)
 
 ## License
