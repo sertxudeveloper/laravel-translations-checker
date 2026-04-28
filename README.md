@@ -4,7 +4,7 @@
 
 ![](https://img.shields.io/github/v/release/sertxudeveloper/laravel-translations-checker) ![](https://github.com/sertxudeveloper/laravel-translations-checker/actions/workflows/tests.yml/badge.svg) ![](https://img.shields.io/github/license/sertxudeveloper/laravel-translations-checker) ![](https://img.shields.io/github/repo-size/sertxudeveloper/laravel-translations-checker) ![](https://img.shields.io/packagist/dt/sertxudeveloper/laravel-translations-checker) ![](https://img.shields.io/github/issues/sertxudeveloper/laravel-translations-checker) ![](https://img.shields.io/packagist/php-v/sertxudeveloper/laravel-translations-checker) [![Codecov Test coverage](https://img.shields.io/codecov/c/github/sertxudeveloper/laravel-translations-checker)](https://app.codecov.io/gh/sertxudeveloper/laravel-translations-checker)
 
-Check Laravel translation files for missing translations.
+Check Laravel translation files for missing translations. Based on the package [LarsWiegers/laravel-translations-checker](https://github.com/LarsWiegers/laravel-translations-checker).
 
 This package scans your Laravel translation files and reports:
 - Missing translation files across languages
